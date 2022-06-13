@@ -1,1 +1,53 @@
-print("Hello world")
+from PIL import Image
+import random as random
+
+pic  = Image.open("Image/Diluc_smirk.jpg")
+
+#------------------------  Appendix  -------------------------------------------#
+
+def partition(l, r, nums):
+    pivot, ptr = nums[r], l
+    for i in range(l, r):
+        if nums[i] <= pivot:
+            nums[i], nums[ptr] = nums[ptr], nums[i]
+            ptr += 1
+    nums[ptr], nums[r] = nums[r], nums[ptr]
+    return ptr
+def quicksort(l, r, nums):
+    if len(nums) == 1:
+        return nums
+    if l < r:
+        pi = partition(l, r, nums)
+        quicksort(l, pi-1, nums)
+        quicksort(pi+1, r, nums)
+    return nums
+
+def colorMatrix():
+    L = []
+    for i in range(256):
+        L.append('0')
+    return L
+print(pic.height * pic.width)
+
+#-----------------------  Functions  -------------------------------------------#
+def colorOcc(img):
+    '''
+    Take any type of image as input
+    Return a list of all the color present and its number of occurences ( (R,G,B) , occ)
+    ( (list[int], list[int], list[int]) , occ)
+    '''
+    (Red,Green,Blue) = (colorMatrix(),colorMatrix(),colorMatrix())
+
+    occ = 0
+    L = []
+    for row in range(0,img.height):
+        for col in range(0,img.width):
+            (r,g,b) = img.getpixel((row,col))
+            if Red[r] == '0' or Blue[b] == '0' or Green[g] == '0':
+                (Red[r],Blue[b],Green[g]) = ('1','1','1')
+                occ+=1
+                L.append((r,g,b))
+    return (L,occ)
+
+(L,occ) = colorOcc(pic)
+print(occ)
