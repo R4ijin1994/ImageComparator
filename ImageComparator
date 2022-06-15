@@ -1,7 +1,8 @@
 from PIL import Image
 import random as random
 
-pic  = Image.open("Image/Diluc_smirk.jpg")
+pic1  = Image.open("Image/Diluc_smirk.jpg")
+pic2  = Image.open("Image/Diluc_smirk (1).jpg")
 
 #------------------------  Appendix  -------------------------------------------#
 
@@ -27,9 +28,23 @@ def colorMatrix():
     for i in range(256):
         L.append('0')
     return L
-print(pic.height * pic.width)
+def containColor(L,x):
+    for e in L:
+        if e == x:
+            return True
+    return False
+
+print( str(pic1.height) + " " + str(pic1.width) , end = " / ")
+print( str(pic2.height) + " " + str(pic2.width) )
+
+'''
+pic2.getpixel((pic2.width-1,pic2.height-1))
+'''
 
 #-----------------------  Functions  -------------------------------------------#
+colorInc = [0,63,127,191,255]
+CI_l = len(colorInc)
+
 def colorOcc(img):
     '''
     Take any type of image as input
@@ -37,17 +52,120 @@ def colorOcc(img):
     ( (list[int], list[int], list[int]) , occ)
     '''
     (Red,Green,Blue) = (colorMatrix(),colorMatrix(),colorMatrix())
-
+    (R,G,B) = ([],[],[])
     occ = 0
-    L = []
+
     for row in range(0,img.height):
         for col in range(0,img.width):
-            (r,g,b) = img.getpixel((row,col))
+            #print(str(row) + " " + str(col))
+            (r,g,b) = img.getpixel((col,row))
             if Red[r] == '0' or Blue[b] == '0' or Green[g] == '0':
                 (Red[r],Blue[b],Green[g]) = ('1','1','1')
                 occ+=1
-                L.append((r,g,b))
-    return (L,occ)
+                R.append(r)
+                G.append(g)
+                B.append(b)
+    return ((R,G,B),occ)
 
-(L,occ) = colorOcc(pic)
-print(occ)
+((R1,G1,B1),occ1) = colorOcc(pic1)
+((R2,G2,B2),occ2) = colorOcc(pic2)
+print( "im1 occ = " + str(occ1) + " / im2 occ = " + str(occ2))
+
+def compIncrement(img):
+    L = []
+    for row in range(0,img.height):
+        for col in range(0,img.width):
+            #print(str(row) + " " + str(col))
+            (r,g,b) = img.getpixel((col,row))
+            ri,gi,bi = 0,0,0
+            while ri < CI_l and r <= colorInc[ri] :
+                ri+=1
+            while gi < CI_l and g <= colorInc[gi] :
+                gi+=1
+            while bi < CI_l and b <= colorInc[bi] :
+                bi+=1
+            rgbI =( colorInc[ri],colorInc[gi],colorInc[bi] )
+            if not(containColor(L,rgbI)):
+                L.append(rgbI)
+    return L
+
+
+def inBetween(L,l,x):
+    i = 0
+    while i < l - 1:
+        s = L[i]
+        h = L[i+1]
+
+        if x == s:
+            return L[i]
+        elif x == h:
+            return L[i+1]
+
+        elif s < x < h :
+            mid = (h - s)//2
+            if x > mid:
+                return L[i+1]
+            else :
+                return L[i]
+        else:
+            i+=1
+
+
+for i in range(0,256,5):
+    print(inBetween(colorInc,CI_l,i))
+
+#print(compIncrement(pic1))
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+print("",end = "")
