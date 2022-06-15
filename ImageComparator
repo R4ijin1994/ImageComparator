@@ -33,16 +33,35 @@ def containColor(L,x):
         if e == x:
             return True
     return False
+def inBetween(L,l,x):
+    i = 0
+    while i < l - 1:
+        s = L[i]
+        h = L[i+1]
 
+        if x == s:
+            return L[i]
+        elif x == h:
+            return L[i+1]
+
+        elif s < x < h :
+            mid = (h - s)//2
+            if x > mid:
+                return L[i+1]
+            else :
+                return L[i]
+        else:
+            i+=1
+
+'''
 print( str(pic1.height) + " " + str(pic1.width) , end = " / ")
 print( str(pic2.height) + " " + str(pic2.width) )
 
-'''
 pic2.getpixel((pic2.width-1,pic2.height-1))
 '''
 
 #-----------------------  Functions  -------------------------------------------#
-colorInc = [0,63,127,191,255]
+colorInc = [0,127,255]
 CI_l = len(colorInc)
 
 def colorOcc(img):
@@ -69,52 +88,30 @@ def colorOcc(img):
 
 ((R1,G1,B1),occ1) = colorOcc(pic1)
 ((R2,G2,B2),occ2) = colorOcc(pic2)
-print( "im1 occ = " + str(occ1) + " / im2 occ = " + str(occ2))
+#print( "im1 occ = " + str(occ1) + " / im2 occ = " + str(occ2))
 
 def compIncrement(img):
     L = []
     for row in range(0,img.height):
         for col in range(0,img.width):
-            #print(str(row) + " " + str(col))
             (r,g,b) = img.getpixel((col,row))
-            ri,gi,bi = 0,0,0
-            while ri < CI_l and r <= colorInc[ri] :
-                ri+=1
-            while gi < CI_l and g <= colorInc[gi] :
-                gi+=1
-            while bi < CI_l and b <= colorInc[bi] :
-                bi+=1
-            rgbI =( colorInc[ri],colorInc[gi],colorInc[bi] )
-            if not(containColor(L,rgbI)):
-                L.append(rgbI)
+            RGB = (inBetween(colorInc,CI_l,r),inBetween(colorInc,CI_l,g),inBetween(colorInc,CI_l,b))
+            if not(containColor(L,RGB)):
+                L.append(RGB)
     return L
 
+L1 = compIncrement(pic1)
+L2 = compIncrement(pic2)
+l1,l2 = len(L1),len(L2)
 
-def inBetween(L,l,x):
-    i = 0
-    while i < l - 1:
-        s = L[i]
-        h = L[i+1]
-
-        if x == s:
-            return L[i]
-        elif x == h:
-            return L[i+1]
-
-        elif s < x < h :
-            mid = (h - s)//2
-            if x > mid:
-                return L[i+1]
-            else :
-                return L[i]
-        else:
-            i+=1
+for e in L2:
+    if not(containColor(L1,e)):
+        print(e)
 
 
-for i in range(0,256,5):
-    print(inBetween(colorInc,CI_l,i))
 
-#print(compIncrement(pic1))
+
+
 
 
 
