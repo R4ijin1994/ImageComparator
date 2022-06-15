@@ -29,11 +29,23 @@ def colorMatrix():
         L.append('0')
     return L
 def containColor(L,x):
-    for e in L:
-        if e == x:
-            return True
-    return False
+    '''
+    Goal : determine wether the element is in the list or not
+    Take : List and the element you want to find (obviously both the list content and the element msut have the same type)
+    Return : a bool
+    '''
+    for i in range(len(L)):
+        (RGB,occ) = L[i]
+        if RGB == x:
+            return (True,i)
+    return (False,-1)
+
 def inBetween(L,l,x):
+    '''
+    Goal : approximate a value using a list
+    Take :  List of int , its length and the element you want to approximate
+    Return : the value approximated form the list
+    '''
     i = 0
     while i < l - 1:
         s = L[i]
@@ -86,27 +98,22 @@ def colorOcc(img):
                 B.append(b)
     return ((R,G,B),occ)
 
-((R1,G1,B1),occ1) = colorOcc(pic1)
-((R2,G2,B2),occ2) = colorOcc(pic2)
-#print( "im1 occ = " + str(occ1) + " / im2 occ = " + str(occ2))
 
 def compIncrement(img):
     L = []
     for row in range(0,img.height):
         for col in range(0,img.width):
             (r,g,b) = img.getpixel((col,row))
+
             RGB = (inBetween(colorInc,CI_l,r),inBetween(colorInc,CI_l,g),inBetween(colorInc,CI_l,b))
-            if not(containColor(L,RGB)):
-                L.append(RGB)
+            (bool,i) = containColor(L,RGB)
+            if bool:
+                (_,occ) = L[i]
+                L[i] = (_,occ+1)
+            else:
+                L.append( (RGB,1) )
     return L
 
-L1 = compIncrement(pic1)
-L2 = compIncrement(pic2)
-l1,l2 = len(L1),len(L2)
-
-for e in L2:
-    if not(containColor(L1,e)):
-        print(e)
 
 
 
