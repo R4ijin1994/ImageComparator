@@ -23,12 +23,12 @@ def quicksort(l, r, nums):
         quicksort(pi+1, r, nums)
     return nums
 
-def colorMatrix():
+def _colorMatrix():
     L = []
     for i in range(256):
         L.append('0')
     return L
-def containColor(L,x):
+def _containColor(L,x):
     '''
     Goal : determine wether the element is in the list or not
     Take : List and the element you want to find (obviously both the list content and the element msut have the same type)
@@ -39,8 +39,7 @@ def containColor(L,x):
         if RGB == x:
             return (True,i)
     return (False,-1)
-
-def inBetween(L,l,x):
+def _inBetweenList(L,l,x):
     '''
     Goal : approximate a value using a list
     Take :  List of int , its length and the element you want to approximate
@@ -50,12 +49,10 @@ def inBetween(L,l,x):
     while i < l - 1:
         s = L[i]
         h = L[i+1]
-
         if x == s:
             return L[i]
         elif x == h:
             return L[i+1]
-
         elif s < x < h :
             mid = (h - s)//2
             if x > mid:
@@ -65,6 +62,22 @@ def inBetween(L,l,x):
         else:
             i+=1
 
+
+precList = [1,3,5,15,17,51,85]
+def _precision(prec):
+    if prec >= 0 and prec <= 6:
+        L = []
+        gap = precList[prec]
+        inc = 0
+        while inc <= 255:
+            L.append(inc)
+            inc += gap
+        return L
+
+
+
+
+
 '''
 print( str(pic1.height) + " " + str(pic1.width) , end = " / ")
 print( str(pic2.height) + " " + str(pic2.width) )
@@ -73,7 +86,7 @@ pic2.getpixel((pic2.width-1,pic2.height-1))
 '''
 
 #-----------------------  Functions  -------------------------------------------#
-colorInc = [0,127,255]
+colorInc = [0,127,255] #list containing the precision of the approximation of the color
 CI_l = len(colorInc)
 
 def colorOcc(img):
@@ -98,14 +111,18 @@ def colorOcc(img):
                 B.append(b)
     return ((R,G,B),occ)
 
-
 def compIncrement(img):
+    '''
+    Goal : for every approximated color give it number of occurences
+    Take : an Image
+    Return : a List of ( (int,int,int) , int ) or ( (Red,Green,Blue), occurences)
+    '''
     L = []
     for row in range(0,img.height):
         for col in range(0,img.width):
             (r,g,b) = img.getpixel((col,row))
 
-            RGB = (inBetween(colorInc,CI_l,r),inBetween(colorInc,CI_l,g),inBetween(colorInc,CI_l,b))
+            RGB = (inBetweenList(colorInc,CI_l,r),inBetweenList(colorInc,CI_l,g),inBetweenList(colorInc,CI_l,b))
             (bool,i) = containColor(L,RGB)
             if bool:
                 (_,occ) = L[i]
@@ -113,10 +130,6 @@ def compIncrement(img):
             else:
                 L.append( (RGB,1) )
     return L
-
-
-
-
 
 
 
